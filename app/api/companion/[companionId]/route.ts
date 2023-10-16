@@ -5,11 +5,18 @@ import prisma from '@/lib/prismadb'
 
 
 
-export async function POST(req:Request) {
+export async function PATCH(
+    req:Request,
+    {params}:{params:{companionId:string}}
+    ) {
     try {
         const body = await req.json()
         const user = await currentUser();
         const {src, name, description,instructions,seed,categoryId}= body
+
+        if(!params.companionId){
+            return new NextResponse("companion ID id required",{status:400})
+        }
 
         if(!user || !user.id || !user.firstName){
             return new NextResponse("unauthorized",{status:401})
@@ -19,7 +26,10 @@ export async function POST(req:Request) {
             return new NextResponse("Missing required details",{status:400})
         }
 
-        const companion = await prisma.companion.create({
+        const companion = await prisma.companion.update({
+            where:{
+                id:params.companionId
+            },
             data:{
                 categoryId,
                 userId:user.id,
@@ -33,7 +43,7 @@ export async function POST(req:Request) {
         })
         return NextResponse.json(companion)
     } catch (error) {
-        console.log("[COMPANION_POST]",error)
+        console.log("[COMPANION_PATCH]",error)
         return new NextResponse("Internal error",{status:200})
     }
 }

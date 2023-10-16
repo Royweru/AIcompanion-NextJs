@@ -103,12 +103,14 @@ const CompanionForm: React.FC<CompanionFormProps> = ({
       }else{
         await axios.post('/api/companion',values)
       }
-      router.refresh()
-      router.push("/")
       toast({
         variant:"default",
-        description:"Success"
+        description:"Success",
+        duration:3000
       })
+      router.refresh()
+      router.push("/")
+     
     } catch (error) {
       toast({
         variant:"destructive",
