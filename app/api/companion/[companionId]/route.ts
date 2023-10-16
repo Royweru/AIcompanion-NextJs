@@ -1,4 +1,4 @@
-import { currentUser } from "@clerk/nextjs"
+import { auth, currentUser } from "@clerk/nextjs"
 import { NextResponse } from "next/server";
 import prisma from '@/lib/prismadb'
 
@@ -45,5 +45,28 @@ export async function PATCH(
     } catch (error) {
         console.log("[COMPANION_PATCH]",error)
         return new NextResponse("Internal error",{status:200})
+    }
+}
+
+export async function DELETE(
+    req:Request,
+    {params}:{params:{companionId:string}}
+) {
+    try {
+        const{userId} = auth();
+        if(!userId){{
+            return new NextResponse("unauthorized",{status:401})
+        }}
+
+        const companion = await prisma.companion.delete({
+            where:{
+                userId,
+                id:params.companionId
+            }
+        })
+        return NextResponse.json(companion)
+    } catch (error) {
+        console.log("[COMPANION_DELETE]",error);
+        return new NextResponse("Internal Error",{status:500})
     }
 }
