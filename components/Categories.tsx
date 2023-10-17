@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 import { Category } from '@prisma/client'
 import {useSearchParams,useRouter} from 'next/navigation'
 import React from 'react'
-import { url } from 'inspector'
+
 
 interface  CategoriesProps{
     data:Category[]
@@ -37,7 +37,7 @@ const Categories:React.FC<CategoriesProps> = ({
   return (
     <div className=' w-full overflow-x-auto space-x-2 flex p-1'>
         <button
-        onClick={()=>undefined}
+        onClick={()=>router.push("/")}
          className={cn(`
            flex
            items-center
